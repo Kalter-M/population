@@ -1,8 +1,8 @@
-package system
+package ru.dsr.bigdata.system
 
 import org.apache.spark.SparkConf
 import org.apache.spark.sql.SparkSession
-import system.Constants._
+import Constants._
 
 object Main extends App{
   private val sparkConf = new SparkConf().setMaster("local")
