@@ -1,7 +1,7 @@
 package ru.dsr.bigdata.system
 
 object Constants {
-  private val DATA_PATH: String = "src/main/recources/sources/"
+  private val DATA_PATH: String = "src/main/resources/sources/"
 
   val FILE_POPULATION_FM: String = "unsd-citypopulation-year-fm.csv"
   val FILE_POPULATION_BOTH: String = "unsd-citypopulation-year-both.csv"
