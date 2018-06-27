@@ -1,11 +1,11 @@
-package ru.dsr.bigdata.system
+package ru.dsr.bigdata
 
 import org.apache.spark.SparkConf
 import org.apache.spark.sql.expressions.Window
 import org.apache.spark.sql.functions._
 import org.apache.spark.sql.types._
 import org.apache.spark.sql.{SaveMode, SparkSession}
-import ru.dsr.bigdata.system.Constants._
+import Constants._
 
 object Main extends App{
   private val sparkConf = new SparkConf().setMaster("local")

@@ -1,4 +1,4 @@
-package ru.dsr.bigdata.system
+package ru.dsr.bigdata
 
 import org.apache.spark.sql.{DataFrame, SparkSession}
 

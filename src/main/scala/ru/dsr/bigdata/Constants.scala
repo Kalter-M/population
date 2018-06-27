@@ -1,4 +1,4 @@
-package ru.dsr.bigdata.system
+package ru.dsr.bigdata
 
 object Constants {
   private val DATA_PATH: String = "src/main/resources/sources/"
