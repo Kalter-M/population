@@ -7,7 +7,6 @@ import org.apache.spark.sql.types._
 import org.apache.spark.sql.{SaveMode, SparkSession}
 import ru.dsr.bigdata.system.Constants._
 
-
 object Main extends App{
   private val sparkConf = new SparkConf().setMaster("local")
   implicit val spark: SparkSession = SparkSession.builder()
@@ -160,34 +159,36 @@ object Main extends App{
     )
     .orderBy('country)
 
-  val optionsPopulation = Map("host" -> "localhost:27017", "database" -> "population", "collection" -> "population")
-  val optionsCountMillionCities = Map("host" -> "localhost:27017", "database" -> "population", "collection" -> "countMillionCities")
-  val optionsTop5Cities = Map("host" -> "localhost:27017", "database" -> "population", "collection" -> "top5Cities")
-  val optionsRatioPopulation = Map("host" -> "localhost:27017", "database" -> "population", "collection" -> "ratioPopulation")
+
+  val options = Map("host" -> "localhost:27017", "database" -> "population")
 
   population
     .write
     .format("com.mongodb.spark.sql.DefaultSource")
     .mode(SaveMode.Overwrite)
-    .options(optionsPopulation)
+    .options(options)
+    .option("collection", "population")
     .save()
   countMillionCities
     .write
     .format("com.mongodb.spark.sql.DefaultSource")
     .mode(SaveMode.Overwrite)
-    .options(optionsCountMillionCities)
+    .options(options)
+    .option("collection", "countMillionCities")
     .save()
   top5Cities
     .write
     .format("com.mongodb.spark.sql.DefaultSource")
     .mode(SaveMode.Overwrite)
-    .options(optionsTop5Cities)
+    .options(options)
+    .option("collection", "top5Cities")
     .save()
   ratioPopulation
     .write
     .format("com.mongodb.spark.sql.DefaultSource")
     .mode(SaveMode.Overwrite)
-    .options(optionsRatioPopulation)
+    .options(options)
+    .option("collection", "ratioPopulation")
     .save()
 
 }
