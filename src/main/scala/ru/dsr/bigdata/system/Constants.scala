@@ -8,4 +8,7 @@ object Constants {
   val PATH_POPULATION_FM: String = DATA_PATH + FILE_POPULATION_FM
   val PATH_POPULATION_BOTH: String = DATA_PATH + FILE_POPULATION_BOTH
 
+  val MALE = "Male"
+  val FEMALE = "Female"
+
 }
