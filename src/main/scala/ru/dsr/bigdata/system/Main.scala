@@ -1,16 +1,18 @@
 package ru.dsr.bigdata.system
 
 import org.apache.spark.SparkConf
-import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.expressions.Window
 import org.apache.spark.sql.functions._
 import org.apache.spark.sql.types._
+import org.apache.spark.sql.{SaveMode, SparkSession}
 import ru.dsr.bigdata.system.Constants._
+
 
 object Main extends App{
   private val sparkConf = new SparkConf().setMaster("local")
   implicit val spark: SparkSession = SparkSession.builder()
     .config(sparkConf)
+    .config("spark.mongodb.output.uri", "mongodb://127.0.0.1/")
     .getOrCreate()
 
   import spark.implicits._
@@ -157,5 +159,35 @@ object Main extends App{
       round('female / ('male + 'female), 2).as("female")
     )
     .orderBy('country)
+
+  val optionsPopulation = Map("host" -> "localhost:27017", "database" -> "population", "collection" -> "population")
+  val optionsCountMillionCities = Map("host" -> "localhost:27017", "database" -> "population", "collection" -> "countMillionCities")
+  val optionsTop5Cities = Map("host" -> "localhost:27017", "database" -> "population", "collection" -> "top5Cities")
+  val optionsRatioPopulation = Map("host" -> "localhost:27017", "database" -> "population", "collection" -> "ratioPopulation")
+
+  population
+    .write
+    .format("com.mongodb.spark.sql.DefaultSource")
+    .mode(SaveMode.Overwrite)
+    .options(optionsPopulation)
+    .save()
+  countMillionCities
+    .write
+    .format("com.mongodb.spark.sql.DefaultSource")
+    .mode(SaveMode.Overwrite)
+    .options(optionsCountMillionCities)
+    .save()
+  top5Cities
+    .write
+    .format("com.mongodb.spark.sql.DefaultSource")
+    .mode(SaveMode.Overwrite)
+    .options(optionsTop5Cities)
+    .save()
+  ratioPopulation
+    .write
+    .format("com.mongodb.spark.sql.DefaultSource")
+    .mode(SaveMode.Overwrite)
+    .options(optionsRatioPopulation)
+    .save()
 
 }
