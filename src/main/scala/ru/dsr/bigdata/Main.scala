@@ -14,9 +14,15 @@ object Main extends App{
   val fm = DataLoad.loadFm()
   val both = DataLoad.loadBoth()
 
-  saveToMongoDB(Job.getPopulation(both), "population")
-  saveToMongoDB(Job.getCountMillionCities(both), "countMillionCities")
-  saveToMongoDB(Job.getTop5Cities(both), "top5Cities")
-  saveToMongoDB(Job.getRatioPopulation(fm), "ratioPopulation")
+  saveToCSV(Job.getPopulation(both), "population.csv")
+  saveToCSV(Job.getCountMillionCities(both), "countMillionCities.csv")
+  saveToCSV(Job.getTop5Cities(both), "top5Cities.csv")
+  saveToCSV(Job.getRatioPopulation(fm), "ratioPopulation.csv")
+
+
+//  saveToMongoDB(Job.getPopulation(both), "population")
+//  saveToMongoDB(Job.getCountMillionCities(both), "countMillionCities")
+//  saveToMongoDB(Job.getTop5Cities(both), "top5Cities")
+//  saveToMongoDB(Job.getRatioPopulation(fm), "ratioPopulation")
 
 }

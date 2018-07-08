@@ -23,4 +23,13 @@ object Tools {
       .option("collection", collection)
       .save()
   }
+
+  def saveToCSV(data: Dataset[Row], name: String)(implicit spark: SparkSession): Unit = {
+    data
+      .repartition(1)
+      .write.format("com.databricks.spark.csv")
+      .option("header", "true")
+      .mode(SaveMode.Overwrite)
+      .save("output/" + name)
+  }
 }
