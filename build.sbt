@@ -12,3 +12,5 @@ libraryDependencies += "org.apache.spark" %% "spark-hive" % sparkVersion
 
 libraryDependencies += "org.mongodb.spark" %% "mongo-spark-connector" % "2.2.3"
 libraryDependencies += "com.databricks" %% "spark-csv" % "1.4.0"
+libraryDependencies += "com.typesafe" % "config" % "1.3.3"
+

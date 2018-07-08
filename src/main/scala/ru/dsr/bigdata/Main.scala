@@ -3,8 +3,11 @@ package ru.dsr.bigdata
 import org.apache.spark.SparkConf
 import org.apache.spark.sql.SparkSession
 import ru.dsr.bigdata.Tools._
+import com.typesafe.config.ConfigFactory
 
 object Main extends App{
+  val conf = ConfigFactory.load()
+
   private val sparkConf = new SparkConf().setMaster("local")
   implicit val spark: SparkSession = SparkSession.builder()
     .config(sparkConf)
