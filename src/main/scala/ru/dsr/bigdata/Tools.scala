@@ -1,33 +1,52 @@
 package ru.dsr.bigdata
 
+import org.apache.spark.rdd.RDD
 import org.apache.spark.sql._
+import ru.dsr.bigdata.Constants._
 
 object Tools {
 
-  private val options = Map("host" -> "localhost:27017", "database" -> "population")
+  def loadRddFromUrl(url: String, withHeader: Boolean)(implicit spark: SparkSession): RDD[Row] = {
 
-  def loadFromCsv(fileName: String)(implicit spark: SparkSession): DataFrame = {
+    val source = scala.io.Source.fromURL(url).mkString
+    var list = source.split("\n").filter(_ != "")
+
+    if (withHeader)
+      list = list.drop(1)
+
+    spark
+      .sparkContext
+      .parallelize(list
+        .map(r => r
+          .replace("\"", "")
+          .split(",")))
+      .map(
+        r => Row
+          .fromSeq(r))
+  }
+
+  def loadDfFromCsv(fileName: String)(implicit spark: SparkSession): DataFrame = {
     spark
       .read
-      .format("com.databricks.spark.csv")
+      .format(CSV_FORMAT)
       .option("header", "true")
       .load(fileName)
   }
 
-  def saveToMongoDB(data: Dataset[Row], collection: String)(implicit spark: SparkSession): Unit = {
+  def saveToMongoDB(data: Dataset[Row], collection: String)(implicit spark: SparkSession, parameters: Parameters): Unit = {
     data
       .write
       .format("com.mongodb.spark.sql.DefaultSource")
       .mode(SaveMode.Overwrite)
-      .options(options)
+      .options(parameters.options)
       .option("collection", collection)
       .save()
   }
 
-  def saveToCSV(data: Dataset[Row], name: String)(implicit spark: SparkSession): Unit = {
+  def saveToCsv(data: Dataset[Row], name: String)(implicit spark: SparkSession): Unit = {
     data
       .repartition(1)
-      .write.format("com.databricks.spark.csv")
+      .write.format(CSV_FORMAT)
       .option("header", "true")
       .mode(SaveMode.Overwrite)
       .save("output/" + name)
