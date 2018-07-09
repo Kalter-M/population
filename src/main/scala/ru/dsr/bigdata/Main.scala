@@ -17,6 +17,7 @@ object Main extends App{
 
   var fm: Dataset[Row] = _
   var both: Dataset[Row] = _
+
   parameters.load_from match {
     case "path" =>
       fm = DataLoad.loadFromPath(parameters.fm_path)
