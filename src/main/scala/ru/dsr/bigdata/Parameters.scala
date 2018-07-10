@@ -21,6 +21,7 @@ class Parameters(conf: Config) {
   val both_url: String = conf.getString("data.both_url")
   val fm_path: String = conf.getString("data.fm_path")
   val both_path: String = conf.getString("data.both_path")
+  val output_path: String = conf.getString("data.output_path")
 
 
 }

@@ -43,12 +43,12 @@ object Tools {
       .save()
   }
 
-  def saveToCsv(data: Dataset[Row], name: String)(implicit spark: SparkSession): Unit = {
+  def saveToCsv(data: Dataset[Row], name: String)(implicit spark: SparkSession, parameters: Parameters): Unit = {
     data
       .repartition(1)
       .write.format(CSV_FORMAT)
       .option("header", "true")
       .mode(SaveMode.Overwrite)
-      .save("output/" + name)
+      .save(parameters.output_path + name)
   }
 }
