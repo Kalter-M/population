@@ -1,35 +1,31 @@
 package ru.dsr.bigdata
 
-import com.typesafe.config.ConfigFactory
 import org.apache.spark.SparkConf
 import org.apache.spark.sql.{Dataset, Row, SparkSession}
 
 object Main extends App{
-  private val conf = ConfigFactory.load.getConfig("app")
 
-  implicit val parameters: Parameters = Parameters.getInstanceOf(conf)
-
-  private val sparkConf = new SparkConf().setMaster(parameters.spark_master)
+  private val sparkConf = new SparkConf().setMaster(AppConfig.spark_master)
   implicit val spark: SparkSession = SparkSession.builder()
     .config(sparkConf)
-    .config("spark.mongodb.output.uri", parameters.output_uri)
+    .config("spark.mongodb.output.uri", AppConfig.output_uri)
     .getOrCreate()
 
   var fm: Dataset[Row] = _
   var both: Dataset[Row] = _
 
-  parameters.load_from match {
+  AppConfig.load_from match {
     case "path" =>
-      fm = DataLoad.loadFromPath(parameters.fm_path)
-      both = DataLoad.loadFromPath(parameters.both_path)
+      fm = DataLoad.loadFromPath(AppConfig.fm_path)
+      both = DataLoad.loadFromPath(AppConfig.both_path)
     case "url" =>
-      fm = DataLoad.loadFromUrl(parameters.fm_url)
-      both = DataLoad.loadFromUrl(parameters.both_url)
+      fm = DataLoad.loadFromUrl(AppConfig.fm_url)
+      both = DataLoad.loadFromUrl(AppConfig.both_url)
     case _ =>
       println("Wrong config load_from!")
   }
 
-  parameters.save_to match {
+  AppConfig.save_to match {
     case "mongodb" =>
       Tools.saveToMongoDB(Job.getPopulation(both), "population")
       Tools.saveToMongoDB(Job.getCountMillionCities(both), "countMillionCities")

@@ -33,22 +33,22 @@ object Tools {
       .load(fileName)
   }
 
-  def saveToMongoDB(data: Dataset[Row], collection: String)(implicit spark: SparkSession, parameters: Parameters): Unit = {
+  def saveToMongoDB(data: Dataset[Row], collection: String)(implicit spark: SparkSession): Unit = {
     data
       .write
       .format("com.mongodb.spark.sql.DefaultSource")
       .mode(SaveMode.Overwrite)
-      .options(parameters.options)
+      .options(AppConfig.options)
       .option("collection", collection)
       .save()
   }
 
-  def saveToCsv(data: Dataset[Row], name: String)(implicit spark: SparkSession, parameters: Parameters): Unit = {
+  def saveToCsv(data: Dataset[Row], name: String)(implicit spark: SparkSession): Unit = {
     data
       .repartition(1)
       .write.format(CSV_FORMAT)
       .option("header", "true")
       .mode(SaveMode.Overwrite)
-      .save(parameters.output_path + name)
+      .save(AppConfig.output_path + name)
   }
 }
