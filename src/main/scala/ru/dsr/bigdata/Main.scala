@@ -1,7 +1,7 @@
 package ru.dsr.bigdata
 
-import org.apache.spark.SparkConf
 import org.apache.spark.sql.{Dataset, Row, SparkSession}
+import org.apache.spark.{SparkConf, SparkFiles}
 
 object Main extends App{
 
@@ -13,6 +13,8 @@ object Main extends App{
 
   var fm: Dataset[Row] = _
   var both: Dataset[Row] = _
+
+  print(SparkFiles.getRootDirectory())
 
   AppConfig.load_from match {
     case "path" =>

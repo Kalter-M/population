@@ -3,7 +3,7 @@ package ru.dsr.bigdata
 import org.apache.spark.sql.types.{StringType, StructField, StructType}
 import org.apache.spark.sql.{Dataset, Row, SparkSession}
 import ru.dsr.bigdata.Main.spark
-import ru.dsr.bigdata.Tools.loadDfFromCsv
+import ru.dsr.bigdata.Tools._
 
 object DataLoad {
 
@@ -42,7 +42,23 @@ object DataLoad {
   }
 
   def loadFromUrl(url: String)(implicit spark: SparkSession): Dataset[Row] = {
-    spark.createDataFrame(Tools.loadRddFromUrl(url, withHeader = true), schema)
+    import spark.implicits._
+
+    loadDfFromUrl(url)
+      .select(
+        $"Country or Area".as("country"),
+        $"Year".as("year"),
+        $"Area".as("area"),
+        $"Sex".as("sex"),
+        $"City".as("city"),
+        $"City type".as("city_type"),
+        $"Record Type".as("record_type"),
+        $"Reliability".as("reliability"),
+        $"Source Year".as("source_year"),
+        $"Value".as("value"),
+        $"Value Footnotes".as("footnotes")
+      )
+      .filter('value isNotNull)
   }
 
 
