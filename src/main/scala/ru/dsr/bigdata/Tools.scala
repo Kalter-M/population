@@ -11,32 +11,20 @@ object Tools {
 
   def loadDfFromUrl(url: String)(implicit spark: SparkSession): DataFrame = {
     loadDfFromUrl(new URL(url))
-
-//    val source = scala.io.Source.fromURL(url).mkString
-//    var list = source.split("\n").filter(_ != "")
-//
-//    if (withHeader)
-//      list = list.drop(1)
-//
-//    spark
-//      .sparkContext
-//      .parallelize(list
-//        .map(r => r
-//          .replace("\"", "")
-//          .split(",")))
-//      .map(
-//        r => Row
-//          .fromSeq(r))
   }
 
 
   def loadDfFromUrl(url: URL)(implicit spark: SparkSession): DataFrame = {
     val str = url.toString
-    spark.sparkContext.addFile("https://raw.githubusercontent.com/datasets/population-city/master/data/unsd-citypopulation-year-fm.csv")
+    spark.sparkContext.addFile(str)
 
     val path = url.getPath
     val file = FilenameUtils.getName(path)
-    spark.read.csv(SparkFiles.get("unsd-citypopulation-year-fm.csv"))
+    spark
+      .read
+      .format(CSV_FORMAT)
+      .option("header", "true")
+      .load(SparkFiles.get(file))
   }
 
   def loadDfFromCsv(fileName: String)(implicit spark: SparkSession): DataFrame = {

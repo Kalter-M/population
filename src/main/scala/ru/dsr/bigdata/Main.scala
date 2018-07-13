@@ -14,8 +14,6 @@ object Main extends App{
   var fm: Dataset[Row] = _
   var both: Dataset[Row] = _
 
-  print(SparkFiles.getRootDirectory())
-
   AppConfig.load_from match {
     case "path" =>
       fm = DataLoad.loadFromPath(AppConfig.fm_path)
@@ -27,6 +25,8 @@ object Main extends App{
       println("Wrong config load_from!")
   }
 
+
+  Job.getPopulation(both).show()
   AppConfig.save_to match {
     case "mongodb" =>
       Tools.saveToMongoDB(Job.getPopulation(both), "population")
