@@ -2,7 +2,4 @@ target
 .idea/
 *.iml
 derby.log
-project
-project/*
-!project/plugins.sbt
 
