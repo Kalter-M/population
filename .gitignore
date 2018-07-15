@@ -3,4 +3,6 @@ target
 *.iml
 derby.log
 project
+project/*
 !project/plugins.sbt
+
