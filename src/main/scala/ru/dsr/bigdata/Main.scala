@@ -25,8 +25,6 @@ object Main extends App{
       println("Wrong config load_from!")
   }
 
-
-  Job.getPopulation(both).show()
   AppConfig.save_to match {
     case "mongodb" =>
       Tools.saveToMongoDB(Job.getPopulation(both), "population")
