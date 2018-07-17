@@ -8,7 +8,6 @@ import ru.dsr.bigdata.Constants._
 import ru.dsr.bigdata.Launcher.spark
 import ru.dsr.bigdata.loader.Loader
 import ru.dsr.bigdata.saver.Saver
-import ru.dsr.bigdata.DataLoad.parseAlias
 
 import scala.language.postfixOps
 
@@ -300,8 +299,8 @@ object Jobs {
 
   implicit class Runner(val job: () => Dataset[Row]) {
     def run(loadStrategy: Loader, saveStrategy: Saver, name: String): Unit = {
-      fm = parseAlias(loadStrategy.load(loadStrategy.fm))
-      both = parseAlias(loadStrategy.load(loadStrategy.both))
+      fm = loadStrategy.load(loadStrategy.fm)
+      both = loadStrategy.load(loadStrategy.both)
 
       saveStrategy.save(job.apply, name)
     }
@@ -309,8 +308,8 @@ object Jobs {
 
   implicit class RunnerWithPeriod(val job: (Int, Int) => Dataset[Row]) {
     def run(loadStrategy: Loader, saveStrategy: Saver, name: String, from: Int, to: Int): Unit = {
-      fm = parseAlias(loadStrategy.load(loadStrategy.fm))
-      both = parseAlias(loadStrategy.load(loadStrategy.both))
+      fm = loadStrategy.load(loadStrategy.fm)
+      both = loadStrategy.load(loadStrategy.both)
 
       saveStrategy.save(job.apply(from, to), name)
     }
