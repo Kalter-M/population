@@ -6,7 +6,8 @@ import org.apache.spark.SparkFiles
 import org.apache.spark.sql.{DataFrame, SparkSession}
 import ru.dsr.bigdata.Constants.CSV_FORMAT
 
-object LoaderUrl extends Loader {
+class LoaderUrl(override val fm: String,override val both: String) extends Loader {
+
   override def load(url: String)(implicit spark: SparkSession): DataFrame = {
     spark.sparkContext.addFile(url)
 

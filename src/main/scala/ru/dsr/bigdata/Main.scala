@@ -14,16 +14,16 @@ object Main{
   var fm: Dataset[Row] = _
   var both: Dataset[Row] = _
 
-  AppConfig.load_from match {
-    case "path" =>
-      fm = DataLoad.loadFromPath(AppConfig.fm_path)
-      both = DataLoad.loadFromPath(AppConfig.both_path)
-    case "url" =>
-      fm = DataLoad.loadFromUrl(AppConfig.fm_url)
-      both = DataLoad.loadFromUrl(AppConfig.both_url)
-    case _ =>
-      println("Wrong config load_from!")
-  }
+//  AppConfig.load_from match {
+//    case "path" =>
+//      fm = DataLoad.loadFromPath(AppConfig.fm_path)
+//      both = DataLoad.loadFromPath(AppConfig.both_path)
+//    case "url" =>
+//      fm = DataLoad.loadFromUrl(AppConfig.fm_url)
+//      both = DataLoad.loadFromUrl(AppConfig.both_url)
+//    case _ =>
+//      println("Wrong config load_from!")
+//  }
 
 //  AppConfig.save_to match {
 //    case "mongodb" =>

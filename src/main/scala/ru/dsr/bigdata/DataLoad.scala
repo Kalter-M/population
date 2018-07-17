@@ -2,10 +2,9 @@ package ru.dsr.bigdata
 
 import org.apache.spark.sql.{Dataset, Row, SparkSession}
 import ru.dsr.bigdata.Main.spark
-import ru.dsr.bigdata.Tools._
 
 object DataLoad {
-  private def parseAlias(data: Dataset[Row]): Dataset[Row] = {
+  def parseAlias(data: Dataset[Row]): Dataset[Row] = {
     import spark.implicits._
 
     data.select(
@@ -23,13 +22,13 @@ object DataLoad {
     )
       .filter('value isNotNull)
   }
-  def loadFromPath(path: String): Dataset[Row] = {
-    parseAlias(loadDfFromCsv(path))
-  }
-
-  def loadFromUrl(url: String)(implicit spark: SparkSession): Dataset[Row] = {
-    parseAlias(loadDfFromUrl(url))
-  }
+//  def loadFromPath(path: String): Dataset[Row] = {
+//    parseAlias(loadDfFromCsv(path))
+//  }
+//
+//  def loadFromUrl(url: String)(implicit spark: SparkSession): Dataset[Row] = {
+//    parseAlias(loadDfFromUrl(url))
+//  }
 
 
 }

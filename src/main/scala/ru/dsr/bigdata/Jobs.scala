@@ -3,20 +3,26 @@ package ru.dsr.bigdata
 import org.apache.spark.sql.expressions.{Window, WindowSpec}
 import org.apache.spark.sql.functions._
 import org.apache.spark.sql.types.IntegerType
-import org.apache.spark.sql.{Dataset, Row}
+import org.apache.spark.sql.{DataFrame, Dataset, Row}
 import ru.dsr.bigdata.Constants._
 import ru.dsr.bigdata.Main.spark
 import ru.dsr.bigdata.loader.Loader
 import ru.dsr.bigdata.saver.Saver
+import ru.dsr.bigdata.DataLoad.parseAlias
+
+import scala.language.postfixOps
 
 object Jobs {
+
+  private var fm: Dataset[Row] = _
+  private var both: Dataset[Row] = _
 
   import spark.implicits._
   val maxYearWindow: WindowSpec = Window.partitionBy('country, 'city, 'city_type).orderBy('year.desc)
   val orderTotalValueWindow: WindowSpec = Window.partitionBy('country).orderBy('total_value.desc)
   val yearRangeWindow: WindowSpec = Window.partitionBy('country, 'city, 'city_type, 'sex).orderBy('year)
 
-  def getPopulation(both: Dataset[Row]): Dataset[Row] = {
+  val getPopulation: () => Dataset[Row] = () => {
     both
       .select(
         'country,
@@ -36,7 +42,7 @@ object Jobs {
       .orderBy('country)
   }
 
-  def getCountMillionCities(both: Dataset[Row]): Dataset[Row] = {
+  def getCountMillionCities: () => Dataset[Row] = () => {
     both
       .select(
         'country,
@@ -60,7 +66,7 @@ object Jobs {
       .orderBy('country)
   }
 
-  def getTop5Cities(both: Dataset[Row]): Dataset[Row] = {
+  def getTop5Cities: () => Dataset[Row] = () => {
     both
       .select(
         'country,
@@ -91,7 +97,7 @@ object Jobs {
       .orderBy('country, 'city, 'total_value.desc)
   }
 
-  def getRatioPopulation(fm: Dataset[Row]): Dataset[Row] = {
+  def getRatioPopulation: () => Dataset[Row] = () => {
     fm
       .select(
         'country,
@@ -130,8 +136,7 @@ object Jobs {
       .orderBy('country)
   }
 
-  def getTop5BestDynamics(fm: Dataset[Row], from: Int, to: Int): Dataset[Row] = {
-
+  def getTop5BestDynamics: (Int, Int) => DataFrame = (from: Int, to: Int) => {
     fm
       .select(
         'country,
@@ -212,8 +217,7 @@ object Jobs {
       )
   }
 
-  def getTop5WorstDynamics(fm: Dataset[Row], from: Int, to: Int): Dataset[Row] = {
-
+  val getTop5WorstDynamics: (Int, Int) => DataFrame = (from: Int, to: Int) => {
     fm
       .select(
         'country,
@@ -294,9 +298,12 @@ object Jobs {
       )
   }
 
-  implicit class Runner(job: Dataset[Row] => Dataset[Row]) {
-    def run(loadStrategy: Loader, saveStrategy: Saver): Unit = {
+  implicit class Runner(job: () => Dataset[Row]) {
+    def run(loadStrategy: Loader, saveStrategy: Saver, name: String): Unit = {
+      fm = parseAlias(loadStrategy.load(loadStrategy.fm))
+      both = parseAlias(loadStrategy.load(loadStrategy.both))
 
+      saveStrategy.save(job.apply, name)
     }
   }
 }
