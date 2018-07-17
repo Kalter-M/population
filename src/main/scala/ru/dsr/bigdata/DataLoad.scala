@@ -1,7 +1,7 @@
 package ru.dsr.bigdata
 
-import org.apache.spark.sql.{Dataset, Row, SparkSession}
-import ru.dsr.bigdata.Main.spark
+import org.apache.spark.sql.{Dataset, Row}
+import ru.dsr.bigdata.Launcher.spark
 
 object DataLoad {
   def parseAlias(data: Dataset[Row]): Dataset[Row] = {

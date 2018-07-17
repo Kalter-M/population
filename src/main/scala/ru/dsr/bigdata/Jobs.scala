@@ -5,7 +5,7 @@ import org.apache.spark.sql.functions._
 import org.apache.spark.sql.types.IntegerType
 import org.apache.spark.sql.{DataFrame, Dataset, Row}
 import ru.dsr.bigdata.Constants._
-import ru.dsr.bigdata.Main.spark
+import ru.dsr.bigdata.Launcher.spark
 import ru.dsr.bigdata.loader.Loader
 import ru.dsr.bigdata.saver.Saver
 import ru.dsr.bigdata.DataLoad.parseAlias
@@ -22,7 +22,7 @@ object Jobs {
   val orderTotalValueWindow: WindowSpec = Window.partitionBy('country).orderBy('total_value.desc)
   val yearRangeWindow: WindowSpec = Window.partitionBy('country, 'city, 'city_type, 'sex).orderBy('year)
 
-  val getPopulation: () => Dataset[Row] = () => {
+  def getPopulation: () => Dataset[Row] = () => {
     both
       .select(
         'country,
@@ -217,7 +217,7 @@ object Jobs {
       )
   }
 
-  val getTop5WorstDynamics: (Int, Int) => DataFrame = (from: Int, to: Int) => {
+  def getTop5WorstDynamics: (Int, Int) => DataFrame = (from: Int, to: Int) => {
     fm
       .select(
         'country,
@@ -298,12 +298,21 @@ object Jobs {
       )
   }
 
-  implicit class Runner(job: () => Dataset[Row]) {
+  implicit class Runner(val job: () => Dataset[Row]) {
     def run(loadStrategy: Loader, saveStrategy: Saver, name: String): Unit = {
       fm = parseAlias(loadStrategy.load(loadStrategy.fm))
       both = parseAlias(loadStrategy.load(loadStrategy.both))
 
       saveStrategy.save(job.apply, name)
+    }
+  }
+
+  implicit class RunnerWithPeriod(val job: (Int, Int) => Dataset[Row]) {
+    def run(loadStrategy: Loader, saveStrategy: Saver, name: String, from: Int, to: Int): Unit = {
+      fm = parseAlias(loadStrategy.load(loadStrategy.fm))
+      both = parseAlias(loadStrategy.load(loadStrategy.both))
+
+      saveStrategy.save(job.apply(from, to), name)
     }
   }
 }

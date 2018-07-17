@@ -1,6 +1,6 @@
 package ru.dsr.bigdata.loader
 
-import org.apache.spark.sql.{DataFrame, Dataset, Row, SparkSession}
+import org.apache.spark.sql.{DataFrame, SparkSession}
 import ru.dsr.bigdata.AppConfig
 
 trait Loader {

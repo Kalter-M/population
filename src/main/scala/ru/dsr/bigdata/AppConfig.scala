@@ -24,4 +24,8 @@ object AppConfig {
     "host" -> mongodb.getString("host"),
     "database" -> mongodb.getString("database")
   )
+
+  val job: String =  data.getString("job")
+  val period_start: Int =  data.getInt("period_start")
+  val period_end: Int =   data.getInt("period_end")
 }
