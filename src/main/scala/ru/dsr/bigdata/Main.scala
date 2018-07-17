@@ -1,9 +1,9 @@
 package ru.dsr.bigdata
 
+import org.apache.spark.SparkConf
 import org.apache.spark.sql.{Dataset, Row, SparkSession}
-import org.apache.spark.{SparkConf, SparkFiles}
 
-object Main extends App{
+object Main{
 
   private val sparkConf = new SparkConf().setMaster(AppConfig.spark_master)
   implicit val spark: SparkSession = SparkSession.builder()
@@ -25,19 +25,19 @@ object Main extends App{
       println("Wrong config load_from!")
   }
 
-  AppConfig.save_to match {
-    case "mongodb" =>
-      Tools.saveToMongoDB(Job.getPopulation(both), "population")
-      Tools.saveToMongoDB(Job.getCountMillionCities(both), "countMillionCities")
-      Tools.saveToMongoDB(Job.getTop5Cities(both), "top5Cities")
-      Tools.saveToMongoDB(Job.getRatioPopulation(fm), "ratioPopulation")
-    case "csv" =>
-      Tools.saveToCsv(Job.getPopulation(both), "population.csv")
-      Tools.saveToCsv(Job.getCountMillionCities(both), "countMillionCities.csv")
-      Tools.saveToCsv(Job.getTop5Cities(both), "top5Cities.csv")
-      Tools.saveToCsv(Job.getRatioPopulation(fm), "ratioPopulation.csv")
-    case _ =>
-      println("Wrong config save_to!")
-  }
+//  AppConfig.save_to match {
+//    case "mongodb" =>
+//      Tools.saveToMongoDB(Jobs.getPopulation(both), "population")
+//      Tools.saveToMongoDB(Jobs.getCountMillionCities(both), "countMillionCities")
+//      Tools.saveToMongoDB(Jobs.getTop5Cities(both), "top5Cities")
+//      Tools.saveToMongoDB(Jobs.getRatioPopulation(fm), "ratioPopulation")
+//    case "csv" =>
+//      Tools.saveToCsv(Jobs.getPopulation(both), "population.csv")
+//      Tools.saveToCsv(Jobs.getCountMillionCities(both), "countMillionCities.csv")
+//      Tools.saveToCsv(Jobs.getTop5Cities(both), "top5Cities.csv")
+//      Tools.saveToCsv(Jobs.getRatioPopulation(fm), "ratioPopulation.csv")
+//    case _ =>
+//      println("Wrong config save_to!")
+//  }
 
 }

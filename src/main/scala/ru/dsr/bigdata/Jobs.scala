@@ -6,8 +6,10 @@ import org.apache.spark.sql.types.IntegerType
 import org.apache.spark.sql.{Dataset, Row}
 import ru.dsr.bigdata.Constants._
 import ru.dsr.bigdata.Main.spark
+import ru.dsr.bigdata.loader.Loader
+import ru.dsr.bigdata.saver.Saver
 
-object Job {
+object Jobs {
 
   import spark.implicits._
   val maxYearWindow: WindowSpec = Window.partitionBy('country, 'city, 'city_type).orderBy('year.desc)
@@ -290,5 +292,11 @@ object Job {
         round(('dynamics_male - 1)*100, 2).as("percents_male"),
         round(('dynamics_female - 1)*100, 2).as("percents_female")
       )
+  }
+
+  implicit class Runner(job: Dataset[Row] => Dataset[Row]) {
+    def run(loadStrategy: Loader, saveStrategy: Saver): Unit = {
+
+    }
   }
 }
