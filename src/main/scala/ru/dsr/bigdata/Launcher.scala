@@ -21,17 +21,17 @@ object Launcher {
 
     AppConfig.job match {
       case "population" =>
-        getPopulation.run(loadStrategy, saveStrategy, AppConfig.job)
+        population(loadStrategy, saveStrategy, AppConfig.job)
       case "countMillionCities" =>
-        getCountMillionCities.run(loadStrategy, saveStrategy, AppConfig.job)
+        countMillionCities(loadStrategy, saveStrategy, AppConfig.job)
       case "top5Cities" =>
-        getTop5Cities.run(loadStrategy, saveStrategy, AppConfig.job)
+        top5Cities(loadStrategy, saveStrategy, AppConfig.job)
       case "ratioPopulation" =>
-        getRatioPopulation.run(loadStrategy, saveStrategy, AppConfig.job)
+        ratioPopulation(loadStrategy, saveStrategy, AppConfig.job)
       case "top5BestDynamics" =>
-        getTop5BestDynamics.run(loadStrategy, saveStrategy, AppConfig.job, AppConfig.period_start, AppConfig.period_end)
+        top5BestDynamics(loadStrategy, saveStrategy, AppConfig.job, AppConfig.period_start, AppConfig.period_end)
       case "top5WorstDynamics" =>
-        getTop5WorstDynamics.run(loadStrategy, saveStrategy, AppConfig.job, AppConfig.period_start, AppConfig.period_end)
+        top5WorstDynamics(loadStrategy, saveStrategy, AppConfig.job, AppConfig.period_start, AppConfig.period_end)
       case _ =>
         throw new IllegalArgumentException("Save parameter wrong.")
     }

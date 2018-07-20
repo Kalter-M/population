@@ -13,16 +13,15 @@ import scala.language.postfixOps
 
 object Jobs {
 
-  private var fm: Dataset[Row] = _
-  private var both: Dataset[Row] = _
+
 
   import spark.implicits._
   val maxYearWindow: WindowSpec = Window.partitionBy('country, 'city, 'city_type).orderBy('year.desc)
   val orderTotalValueWindow: WindowSpec = Window.partitionBy('country).orderBy('total_value.desc)
   val yearRangeWindow: WindowSpec = Window.partitionBy('country, 'city, 'city_type, 'sex).orderBy('year)
 
-  def getPopulation: () => Dataset[Row] = () => {
-    both
+  def population(loadStrategy: Loader, saveStrategy: Saver, name: String): Unit = {
+    val result = loadStrategy.load(loadStrategy.both)
       .select(
         'country,
         'city,
@@ -39,10 +38,12 @@ object Jobs {
       )
       .filter('population isNotNull)
       .orderBy('country)
+
+    saveStrategy.save(result, name)
   }
 
-  def getCountMillionCities: () => Dataset[Row] = () => {
-    both
+  def countMillionCities(loadStrategy: Loader, saveStrategy: Saver, name: String): Unit = {
+    val result = loadStrategy.load(loadStrategy.both)
       .select(
         'country,
         'city,
@@ -63,10 +64,12 @@ object Jobs {
       )
       .agg(count('city).as("count"))
       .orderBy('country)
+
+    saveStrategy.save(result, name)
   }
 
-  def getTop5Cities: () => Dataset[Row] = () => {
-    both
+  def top5Cities(loadStrategy: Loader, saveStrategy: Saver, name: String): Unit = {
+    val result = loadStrategy.load(loadStrategy.both)
       .select(
         'country,
         'city,
@@ -94,10 +97,12 @@ object Jobs {
         'total_value
       )
       .orderBy('country, 'city, 'total_value.desc)
+
+    saveStrategy.save(result, name)
   }
 
-  def getRatioPopulation: () => Dataset[Row] = () => {
-    fm
+  def ratioPopulation(loadStrategy: Loader, saveStrategy: Saver, name: String): Unit = {
+    val result = loadStrategy.load(loadStrategy.fm)
       .select(
         'country,
         'city,
@@ -133,10 +138,12 @@ object Jobs {
         round('female / ('male + 'female), 2).as("female")
       )
       .orderBy('country)
+
+    saveStrategy.save(result, name)
   }
 
-  def getTop5BestDynamics: (Int, Int) => DataFrame = (from: Int, to: Int) => {
-    fm
+  def top5BestDynamics(loadStrategy: Loader, saveStrategy: Saver, name: String, from: Int, to: Int): Unit = {
+    val result = loadStrategy.load(loadStrategy.fm)
       .select(
         'country,
         'city,
@@ -214,10 +221,12 @@ object Jobs {
         round(('dynamics_male - 1)*100, 2).as("percents_male"),
         round(('dynamics_female - 1)*100, 2).as("percents_female")
       )
+
+    saveStrategy.save(result, name)
   }
 
-  def getTop5WorstDynamics: (Int, Int) => DataFrame = (from: Int, to: Int) => {
-    fm
+  def top5WorstDynamics(loadStrategy: Loader, saveStrategy: Saver, name: String, from: Int, to: Int): Unit = {
+    val result = loadStrategy.load(loadStrategy.fm)
       .select(
         'country,
         'city,
@@ -295,23 +304,7 @@ object Jobs {
         round(('dynamics_male - 1)*100, 2).as("percents_male"),
         round(('dynamics_female - 1)*100, 2).as("percents_female")
       )
-  }
 
-  implicit class Runner(val job: () => Dataset[Row]) {
-    def run(loadStrategy: Loader, saveStrategy: Saver, name: String): Unit = {
-      fm = loadStrategy.load(loadStrategy.fm)
-      both = loadStrategy.load(loadStrategy.both)
-
-      saveStrategy.save(job.apply, name)
-    }
-  }
-
-  implicit class RunnerWithPeriod(val job: (Int, Int) => Dataset[Row]) {
-    def run(loadStrategy: Loader, saveStrategy: Saver, name: String, from: Int, to: Int): Unit = {
-      fm = loadStrategy.load(loadStrategy.fm)
-      both = loadStrategy.load(loadStrategy.both)
-
-      saveStrategy.save(job.apply(from, to), name)
-    }
+    saveStrategy.save(result, name)
   }
 }
