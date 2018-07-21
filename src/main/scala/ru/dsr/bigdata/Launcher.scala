@@ -16,24 +16,37 @@ object Launcher {
 
   def main(args: Array[String]) {
 
-    val loadStrategy = getLoader(AppConfig.load_from)
-    val saveStrategy = getSaver(AppConfig.save_to)
+    val options = args.map(setKeyValue).toMap.filter(p => !p._2.isEmpty)
 
-    AppConfig.job match {
+    val loadFrom = options.getOrElse("load_from", AppConfig.load_from)
+    val saveTo = options.getOrElse("save_to", AppConfig.save_to)
+    val job = options.getOrElse("job", AppConfig.job)
+    val periodStart = options.getOrElse[String]("period_start", AppConfig.period_start).toInt
+    val periodEnd = options.getOrElse[String]("period_end", AppConfig.period_end).toInt
+
+    val loadStrategy = getLoader(loadFrom)
+    val saveStrategy = getSaver(saveTo)
+
+    job match {
       case "population" =>
-        population(loadStrategy, saveStrategy, AppConfig.job)
+        population(loadStrategy, saveStrategy, job)
       case "countMillionCities" =>
-        countMillionCities(loadStrategy, saveStrategy, AppConfig.job)
+        countMillionCities(loadStrategy, saveStrategy, job)
       case "top5Cities" =>
-        top5Cities(loadStrategy, saveStrategy, AppConfig.job)
+        top5Cities(loadStrategy, saveStrategy, job)
       case "ratioPopulation" =>
-        ratioPopulation(loadStrategy, saveStrategy, AppConfig.job)
+        ratioPopulation(loadStrategy, saveStrategy, job)
       case "top5BestDynamics" =>
-        top5BestDynamics(loadStrategy, saveStrategy, AppConfig.job, AppConfig.period_start, AppConfig.period_end)
+        top5BestDynamics(loadStrategy, saveStrategy, job, periodStart, periodEnd)
       case "top5WorstDynamics" =>
-        top5WorstDynamics(loadStrategy, saveStrategy, AppConfig.job, AppConfig.period_start, AppConfig.period_end)
+        top5WorstDynamics(loadStrategy, saveStrategy, job, periodStart, periodEnd)
       case _ =>
         throw new IllegalArgumentException("Save parameter wrong.")
     }
+  }
+
+  private def setKeyValue(arg: String): (String, String) = {
+    val keyValue = arg.split("=", -1)
+    (keyValue(0), keyValue(1))
   }
 }
