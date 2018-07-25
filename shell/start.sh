@@ -20,6 +20,7 @@ echo "Start build project..."
 (cd ../ && sbt assembly)
 echo "Build done."
 echo "MongoDB startup..."
+docker pull mongo:3.6
 docker run -d -p 27017:27017 mongo:3.6
 echo "MongoDB startup done."
 echo "Running job..."
