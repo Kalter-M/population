@@ -24,7 +24,8 @@ docker run -d -p 27017:27017 mongo:3.6
 echo "MongoDB startup done."
 echo "Running job..."
 export PROJECT_PATH=${PWD}/..
-export SPARK_HOME=/usr/local/spark
+# Env var SPARK_HOME should be set, like
+# export SPARK_HOME=/usr/local/spark
 export unsd_fm=$PROJECT_PATH/target/scala-2.11/classes/sources/unsd-citypopulation-year-fm.csv
 export unsd_both=$PROJECT_PATH/target/scala-2.11/classes/sources/unsd-citypopulation-year-both.csv
 cd $SPARK_HOME
